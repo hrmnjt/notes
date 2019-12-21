@@ -40,6 +40,7 @@ make savenotes
 - [ ] Docs
 - [ ] Improve the project structure. Fixate on design decisions
 - [ ] Add CLI tool and args for usage
+- [ ] Handle exceptions and make the code resilient
 - [ ] Requirement management
 - [ ] Features
     - [ ] Add options to CRUD notes
