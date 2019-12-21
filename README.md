@@ -12,8 +12,7 @@ Clone this repository (first time only) and create virtual environment
 ```bash
 git clone git@github.com:hrmnjt/notes.git notes
 cd notes
-python3 -m venv ./pyenv
-pip install -r requirements.txt
+make setupnotes
 ```
 
 Activating virtual environment
@@ -28,16 +27,12 @@ python generator.py
 
 Pulling and decrypting notes
 ```python
-git pull origin master
-python decryptor.py
+make writenotes
 ```
 
 Pushing post making changes
 ```python
-python encryptor.py
-git add .
-git commit -m "Updating notes - `date +'%Y-%m-%d %H:%M:%S'`"
-git push origin master
+make savenotes
 ```
 
 ## TODO
