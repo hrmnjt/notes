@@ -40,9 +40,21 @@ git push origin master
 ```
 
 ## TODO
-- [ ] Add makefile and improve Dx
-- [ ] CLI and arguments for the notes
-- [ ] Abstract the codebase and create module
-- [ ] Add different encryption formats
-- [ ] Add different key options
-- [ ] ...
+- [ ] Tidy up
+- [ ] Docs
+- [ ] Improve the project structure. Fixate on design decisions
+- [ ] Add CLI tool and args for usage
+- [ ] Requirement management
+- [ ] Features
+    - [ ] Add options to CRUD notes
+    - [ ] Add different key options
+    - [ ] Add different encryption formats
+    - [ ] Find notes
+    - [ ] Interactive mode
+    - [ ] Custom backup providers - git based
+- [ ] Improve code convention and style
+    - [ ] Add comments
+    - [ ] Unit tests
+    - [ ] DRY
+    - [ ] Contribution guidelines
+- [ ] Packaging
