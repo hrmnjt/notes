@@ -13,6 +13,7 @@ Clone this repository (first time only) and create virtual environment
 git clone git@github.com:hrmnjt/notes.git notes
 cd notes
 python3 -m venv ./pyenv
+pip install -r requirements.txt
 ```
 
 Activating virtual environment
