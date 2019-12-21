@@ -1,2 +1,10 @@
+# .gitignore
+
+# VSCode specifics
+.vscode
+
+# Python venv
 pyenv
+
+# Fernet key
 key.key
