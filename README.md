@@ -3,15 +3,13 @@
 Git backed private encrypted note-taking. Awesomeness coming soon!
 
 Context:
-A quick and dirty implementation of the project can be found in the `release-0.1.0` branch. I'm as of now re-designing the approach for notes, not loosing the initial essence/motivation. The primary idea is two fold:
+A quick and dirty implementation of the project can be found in the [`release-0.1.0`](https://github.com/hrmnjt/notes/tree/release-0.1.0) branch. I'm as of now re-designing the approach for notes, not loosing the initial essence/motivation. The primary idea is two fold:
 - fork the repo and start writing notes
 - multiple options for making notes secure and private
 
-TODO: add links for `release-0.1.0` branch
-
 ## Documentation
 
-Documentation for the project is done using [Sphinx]() and is located in [docs]() folder.
+Documentation for the project is done using [Sphinx](https://www.sphinx-doc.org/en/master/) and is located in [docs](#) folder.
 TODO: add details for guided docs
 
 ## Todos
