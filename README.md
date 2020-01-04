@@ -9,7 +9,7 @@ A quick and dirty implementation of the project can be found in the [`release-0.
 
 ## Documentation
 
-Documentation for the project is done using [Sphinx](https://www.sphinx-doc.org/en/master/) and is located in [docs](#) folder.
+Documentation for the project is done using [Sphinx](https://www.sphinx-doc.org/en/master/) and is located in [docs](#) folder.  
 TODO: add details for guided docs
 
 ## Todos
