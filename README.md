@@ -9,13 +9,17 @@ A quick and dirty implementation of the project can be found in the [`release-0.
 
 ## Documentation
 
-Documentation for the project is done using [Sphinx](https://www.sphinx-doc.org/en/master/) and is located in [docs](#) folder.  
+Documentation for the project is done using [Sphinx](https://www.sphinx-doc.org/en/master/) and directories for reference are below:
+- [source code for documentation](./src/documentation/documentation.md)
+- [Generated documentation for GH](./docs)
+
 TODO: add details for guided docs
 
 ## Todos
-- [x] Tidy up - structure for project
-- [ ] Docs
-- [ ] Improve the project structure. Fixate on design decisions
+- [x] Tidy up
+    - [x] structure for project
+    - [x] Documentation structure
+- [ ] Design decisions
 - [ ] Add CLI tool and args for usage
 - [ ] Handle exceptions and make the code resilient
 - [ ] Requirement management

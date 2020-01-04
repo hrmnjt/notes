@@ -4,7 +4,10 @@
 pyenv
 
 # Documentation
-docs/_build
+src/documentation/build
 
 # Cache
 __pycache__
+
+# VSCode
+.vscode
