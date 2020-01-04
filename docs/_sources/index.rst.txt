@@ -10,7 +10,8 @@ Welcome to notes's documentation!
    :maxdepth: 2
    :caption: Contents:
 
-
+..    modules
+.. Need to uncomment modules after documentation has actaully been created
 
 
 .. Indices and tables
