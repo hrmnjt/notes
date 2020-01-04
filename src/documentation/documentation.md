@@ -11,15 +11,15 @@ TODO: update the Documentation to point to generated docs and add better details
 
 ## Command reference
 
-Need to run commands from `src/documentation` folder
+Make commands to be run from project root directory
 
 ```bash
-# Move to documentation folder
-cd src/documentation
-
 # If you updated the python code - generate module documentation
 sphinx-apidoc -f -o source/ ../.
 
 # Regenerate all docs
 make html
+
+# Clean regenerate in single step - suggested only in case of major changes
+make cleanhtml
 ```
