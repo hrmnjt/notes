@@ -1,42 +1,21 @@
 # Notes
 
-Git backed private encrypted note-taking. Awesomeness coming soon
+Git backed private encrypted note-taking. Awesomeness coming soon!
 
-## Usage
+Context:
+A quick and dirty implementation of the project can be found in the `release-0.1.0` branch. I'm as of now re-designing the approach for notes, not loosing the initial essence/motivation. The primary idea is two fold:
+- fork the repo and start writing notes
+- multiple options for making notes secure and private
 
-Prerequisites:
-- Git
-- Python3 and [`venv`](https://docs.python.org/3/library/venv.html#module-venv) package
+TODO: add links for `release-0.1.0` branch
 
-Clone this repository (first time only) and create virtual environment
-```bash
-git clone git@github.com:hrmnjt/notes.git notes
-cd notes
-make setupnotes
-```
+## Documentation
 
-Activating virtual environment
-```bash
-source ./pyenv/bin/activate
-```
+Documentation for the project is done using [Sphinx]() and is located in [docs]() folder.
+TODO: add details for guided docs
 
-Generating fernet key (first time only)
-```python
-python generator.py
-```
-
-Pulling and decrypting notes
-```python
-make writenotes
-```
-
-Pushing post making changes
-```python
-make savenotes
-```
-
-## TODO
-- [ ] Tidy up
+## Todos
+- [x] Tidy up - structure for project
 - [ ] Docs
 - [ ] Improve the project structure. Fixate on design decisions
 - [ ] Add CLI tool and args for usage

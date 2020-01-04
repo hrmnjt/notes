@@ -1,13 +1,10 @@
 # .gitignore
 
-# VSCode specifics
-.vscode
-
 # Python venv
 pyenv
 
-# Fernet key
-key.key
+# Documentation
+docs/_build
 
-# Python cache
+# Cache
 __pycache__
