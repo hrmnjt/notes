@@ -8,3 +8,6 @@ pyenv
 
 # Fernet key
 key.key
+
+# Python cache
+__pycache__
