@@ -19,6 +19,7 @@ html:
 	@rm -rf ../../docs
 	@mkdir -p ../../docs
 	@cp -r $(BUILDDIR)/html/. ../../docs/
+	@echo "" > ../../docs/.nojekyll
 	@echo "Replaced latest generated docs in /docs folder"
 
 # Catch-all target: route all unknown targets to Sphinx using the new
