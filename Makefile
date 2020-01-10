@@ -1,35 +1,15 @@
-# Makefile
+DC_COMPOSE = docker-compose --project-name notes-docs -f setup/docker-compose.yml
 
-SPHINXOPTS    ?=
-SPHINXBUILD   ?= sphinx-build
-SOURCEDIR     = src/documentation/source
-BUILDDIR      = src/documentation/build
-DOCSDIR       = docs
+start-docs-server:
+	@$(DC_COMPOSE) up --timeout 0 --renew-anon-volumes --force-recreate --always-recreate-deps --remove-orphans --detach
+	@echo "Docs are available at localhost:8000"
 
-# Put it first so that "make" without argument is like "make help".
-.PHONY: help Makefile
-help:
-	@$(SPHINXBUILD) -M help "$(SOURCEDIR)" "$(BUILDDIR)" $(SPHINXOPTS) $(O)
+stop-docs-server:
+	@$(DC_COMPOSE) down --timeout 0
 
-
-.PHONY: html
-html:
-	@$(SPHINXBUILD) -M html "$(SOURCEDIR)" "$(BUILDDIR)" $(SPHINXOPTS) $(O)
-	@echo "Regenerated all docs"
-	@rm -rf $(DOCSDIR)
-	@mkdir -p $(DOCSDIR)
-	@cp -r $(BUILDDIR)/html/. $(DOCSDIR)/
-	@echo "" > $(DOCSDIR)/.nojekyll
-	@echo "Replaced latest generated docs in /docs folder"
-
-
-.PHONY: clean
-clean:
-	@rm -rf $(BUILDDIR)/*
-	@echo "Cleaned build directory"
-	@rm -rf $(DOCSDIR)
-	@echo "Cleaned GH docs directory"
-
-
-.PHONY: cleanhtml
-cleanhtml: clean html
+clean-docs-server:
+	@$(DC_COMPOSE) down --volumes --timeout 0 --remove-orphans
+	@docker container prune -f
+	@docker volume prune -f
+	@docker container ls -a
+	@docker volume ls
