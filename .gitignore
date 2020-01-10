@@ -2,11 +2,6 @@
 
 # Python venv
 pyenv
-
-# Documentation
-src/documentation/build
-
-# Cache
 __pycache__
 
 # VSCode
