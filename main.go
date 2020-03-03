@@ -2,6 +2,26 @@
 Package notes is going to be an awesome. This module is coming soon. Please
 await further changes on this.
 
+		Long description for root notes
+
+		Usage:
+			notes [flags]
+			notes [command]
+
+		Available Commands:
+			help        Help about any command
+			new         A brief description of your command
+			pull        A brief description of your command
+			push        A brief description of your command
+			save        A brief description of your command
+
+		Flags:
+					--config string   config file (default is $HOME/.notes.yaml)
+			-h, --help            help for notes
+			-t, --toggle          Help message for toggle
+
+		Use "notes [command] --help" for more information about a command.
+
 License
 
 Copyright © 2020 Harman <hrmnjt@hrmn.in>
