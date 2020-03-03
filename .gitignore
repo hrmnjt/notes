@@ -1,9 +1,4 @@
 # .gitignore
 
-# Python venv
-pyenv
-__pycache__
-docs/build
-
 # VSCode
 .vscode
