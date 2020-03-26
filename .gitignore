@@ -1,0 +1,9 @@
+# .gitignore
+
+# Python
+pyenv
+
+
+
+# VSCode
+.vscode
