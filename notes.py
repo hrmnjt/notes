@@ -1,4 +1,4 @@
-"""Notes - Note down privately!
+'''Notes - Note down privately!
 
 Usage:
     notes.py [public | private] <fn>
@@ -9,7 +9,7 @@ Usage:
 Options:
     -h --help     Show this screen
     -v --version  Show version
-"""
+'''
 
 from docopt import docopt
 from pathlib import Path
@@ -60,28 +60,44 @@ def notes():
     '''
     project_dir = Path.cwd()
     notes_dir = project_dir / 'notes'
-    config_file = notes_dir / 'config.yml'
+    config_file = project_dir / 'config'
     new_note_dir = notes_dir / '{}'.format(new_file_type)
     new_note_name = notes_dir / '{}'.format(new_file_type) / '{}.md'.format(arguments['<fn>'])
 
-    print("Project directory: {}".format(project_dir))
-    print("Notes directory: {}".format(notes_dir))
-    print("New note directory: {}".format(new_note_dir))
-    print("New note: {}".format(new_note_name))
+    print('Project directory: {}'.format(project_dir))
+    print('Notes directory: {}'.format(notes_dir))
+    print('New note directory: {}'.format(new_note_dir))
+    print('New note: {}'.format(new_note_name))
 
-    print("Creating a new {} note as {}".format(new_file_type, new_note_name))
+    print('Creating a new {} note as {}'.format(new_file_type, new_note_name))
 
     new_note_name.touch()
 
-    print("Listing the file directory:")
+    print('Listing the file directory:')
     tree(notes_dir)
 
+    '''Checking the configuration file
+    - Creating new if it doesn't exist and expect passphrase from user
+    - Read passphrase from the configuration file
+    '''
     if config_file.exists():
-        print("Config file exist as {}".format(config_file))
+        print('Config file exist as {}'.format(config_file))
+        f = open(config_file, 'r')
+        if f.mode == 'r':
+            passphrase = f.read()
+            print(passphrase)
+        f.close()
+
     else:
-        print("Creating config file as {}".format(config_file))
-        config_file.touch()
+        print('Creating config file as {}'.format(config_file))
+        passphrase = input('Please enter a passphrase:\n')
+        f = open(config_file, 'w')
+        if f.mode == 'w':
+            f.write(passphrase)
+        f.close()
 
 
-if __name__ == "__main__":
+
+
+if __name__ == '__main__':
     notes()
