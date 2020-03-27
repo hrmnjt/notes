@@ -4,8 +4,8 @@ Notes is a command line utility created to publically save private notes which
 are created as scratch files during developement on a particular project.
 
 Usage:
-    notes.py [public | private] <fn>
     notes.py list
+    notes.py [public | private] <fn>
     notes.py sync
     notes.py -h | --help
     notes.py -v | --version
@@ -18,22 +18,6 @@ Work in progress by @hrmnjt
 '''
 
 from pathlib import Path
-
-
-def NotesCommandLineInterface():
-    pass
-
-
-def ListNotes(directory):
-    print('\n{}'.format(directory))
-    for path in sorted(directory.rglob('*')):
-        depth = len(path.relative_to(directory).parts)
-        spacer = '|-- ' * depth
-        if path.is_file():
-            print('{}{}'.format(spacer, path.name))
-        else:
-            print('{}{}'.format(spacer, path.name))
-    print()
 
 
 def ConfigurationManagement():
@@ -60,15 +44,30 @@ def ConfigurationManagement():
         f.close()
 
 
+def ListNotes(directory):
+    print('\n{}'.format(directory))
+    for path in sorted(directory.rglob('*')):
+        depth = len(path.relative_to(directory).parts)
+        spacer = '|-- ' * depth
+        if path.is_file():
+            print('{}{}'.format(spacer, path.name))
+        else:
+            print('{}{}'.format(spacer, path.name))
+    print()
+
+
 def CreateNewNotes():
 
     # TODO: add exception handling and bring some grace
     # TODO: DRY
+    # TODO: remove new_file_type hardcode
+    new_file_type = 'public'
     project_dir = Path.cwd()
     notes_dir = project_dir / 'notes'
     config_file = project_dir / 'config'
     new_note_dir = notes_dir / '{}'.format(new_file_type)
-    new_note_name = notes_dir / '{}'.format(new_file_type) / '{}.md'.format(arguments['<fn>'])
+    new_note_name = notes_dir / \
+        '{}'.format(new_file_type) / '{}.md'.format(arguments['<fn>'])
 
     print('Project directory: {}'.format(project_dir))
     print('Notes directory: {}'.format(notes_dir))
