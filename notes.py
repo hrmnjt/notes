@@ -1,5 +1,6 @@
 '''Notes - Note down privately!
 
+TODO: add description
 Usage:
     notes.py [public | private] <fn>
     notes.py sync
@@ -9,27 +10,41 @@ Usage:
 Options:
     -h --help     Show this screen
     -v --version  Show version
+
+TODO: update description
+TODO: improve commentary
 '''
 
-from docopt import docopt
+from docopt import docopt, DocoptExit
 from pathlib import Path
 
+
+# Utility function - print tree
 def tree(directory):
-    print(f'{directory}')
+    print('\n{}'.format(directory))
     for path in sorted(directory.rglob('*')):
         depth = len(path.relative_to(directory).parts)
-        spacer = '|--' * depth
+        spacer = '|-- ' * depth
         if path.is_file():
-            print(f'{spacer}{path.name}')
+            print('{}{}'.format(spacer, path.name))
         else:
-            print(f'{spacer}{path.name}')
+            print('{}{}'.format(spacer, path.name))
+    print()
 
 
 def notes():
-    arguments = docopt(__doc__, version='Notes 1.0')
-    print(arguments)
+    # TODO: replace docopt with argparse
+    try:
+        docargs = docopt(__doc__, version='Notes 1.0')
+    except DocoptExit:
+        print('Something went wrong with docopt')
+    else:
+        arguments = docopt(__doc__, version='Notes 1.0')
+        print(docargs)
+        print(arguments)
+        print(docopt(__doc__, version='Notes 1.0'))
 
-    ''' Checking the type of note
+    '''Checking the type of note
 
     As per the logic gate combinations:
     True | True = True
@@ -39,6 +54,7 @@ def notes():
 
     Hence, default note type would be private
     '''
+
     if (arguments['public'] | arguments['private']) == False:
         new_file_type = 'private'
     elif arguments['public'] == True:
@@ -97,7 +113,14 @@ def notes():
         f.close()
 
 
-
-
 if __name__ == '__main__':
-    notes()
+    # notes()
+
+    # TODO: remove redundancy and bring some grace
+    project_dir = Path.cwd()
+    notes_dir = project_dir / 'notes'
+    config_file = project_dir / 'config'
+    # new_note_dir = notes_dir / '{}'.format(new_file_type)
+    # new_note_name = notes_dir / '{}'.format(new_file_type) / '{}.md'.format(arguments['<fn>'])
+
+    tree(notes_dir)
