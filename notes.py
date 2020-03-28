@@ -56,7 +56,7 @@ def printTree(directory):
 def configurationPassphrase():
 
     if CONFIG_FILE.exists():
-        print('Config file exist as {}'.format(config_file))
+        print('Config file exist as {}'.format(CONFIG_FILE))
         f = open(CONFIG_FILE, 'r')
         if f.mode == 'r':
             passphrase = f.read()
