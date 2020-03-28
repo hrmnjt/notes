@@ -4,47 +4,43 @@ Notes is a command line utility created to publically save private notes which
 are created as scratch files during developement on a particular project.
 
 Usage:
-    notes.py list
-    notes.py [public | private] <fn>
+    notes.py ls
+    notes.py new [--file-type TEXT] filename
     notes.py sync
     notes.py -h | --help
-    notes.py -v | --version
+    notes.py --version
 
 Options:
-    -h --help     Show this screen
-    -v --version  Show version
+    -h --help       Show this screen
+    --version       Show version
 
 Work in progress by @hrmnjt
 '''
 
+import click
 from pathlib import Path
 
 
-def ConfigurationManagement():
-
-    # TODO: add exception handling and bring some grace
-    # TODO: DRY
-    project_dir = Path.cwd()
-    notes_dir = project_dir / 'notes'
-    config_file = project_dir / 'config'
-    if config_file.exists():
-        print('Config file exist as {}'.format(config_file))
-        f = open(config_file, 'r')
-        if f.mode == 'r':
-            passphrase = f.read()
-            print(passphrase)
-        f.close()
-
-    else:
-        print('Creating config file as {}'.format(config_file))
-        passphrase = input('Please enter a passphrase:\n')
-        f = open(config_file, 'w')
-        if f.mode == 'w':
-            f.write(passphrase)
-        f.close()
+# Click context settings
+CONTEXT_SETTINGS = dict(
+    help_option_names=['-h', '--help']
+)
+# Directory setup for project
+PROJECT_DIR = Path.cwd()
+NOTES_DIR = PROJECT_DIR / 'notes'
+CONFIG_FILE = PROJECT_DIR / 'config'
 
 
-def ListNotes(directory):
+def printTree(directory):
+    '''Prints the directory contents
+
+    printTree is a utility function which prints the directory structure on
+    command line similar to UNIX tree binary but with very basic functionality
+    Link to (actual) tree - https://linux.die.net/man/1/tree
+
+    This utility is used to print the notes directory structure when doing
+    operations with new or existing notes
+    '''
     print('\n{}'.format(directory))
     for path in sorted(directory.rglob('*')):
         depth = len(path.relative_to(directory).parts)
@@ -56,30 +52,97 @@ def ListNotes(directory):
     print()
 
 
-def CreateNewNotes():
+# Utility function
+def configurationPassphrase():
 
-    # TODO: add exception handling and bring some grace
-    # TODO: DRY
-    # TODO: remove new_file_type hardcode
-    new_file_type = 'public'
-    project_dir = Path.cwd()
-    notes_dir = project_dir / 'notes'
-    config_file = project_dir / 'config'
-    new_note_dir = notes_dir / '{}'.format(new_file_type)
-    new_note_name = notes_dir / \
-        '{}'.format(new_file_type) / '{}.md'.format(arguments['<fn>'])
+    if CONFIG_FILE.exists():
+        print('Config file exist as {}'.format(config_file))
+        f = open(CONFIG_FILE, 'r')
+        if f.mode == 'r':
+            passphrase = f.read()
+            print(passphrase)
+        f.close()
+    else:
+        print('Creating config file as {}'.format(CONFIG_FILE))
+        passphrase = input('Please enter a passphrase:\n')
+        f = open(CONFIG_FILE, 'w')
+        if f.mode == 'w':
+            f.write(passphrase)
+        f.close()
 
-    print('Project directory: {}'.format(project_dir))
-    print('Notes directory: {}'.format(notes_dir))
-    print('New note directory: {}'.format(new_note_dir))
-    print('New note: {}'.format(new_note_name))
+    return(passphrase)
 
-    print('Creating a new {} note as {}'.format(new_file_type, new_note_name))
 
-    new_note_name.touch()
+@click.group(
+    context_settings=CONTEXT_SETTINGS,
+    help='''Notes - Note down privately!
 
-    print('Listing the file directory:')
-    ListNotes(notes_dir)
+    Notes is a command line utility created to publically save private notes
+    which are created as scratch files during developement on an idea/thought.
+
+    Work in progress by @hrmnjt
+    '''
+)
+@click.version_option(version='0.1.0')
+def NotesCommandLineInterface():
+    pass
+
+
+@NotesCommandLineInterface.command(
+    short_help='List all public and private notes'
+)
+def ls():
+    '''List all public and private notes
+
+    Command line option `ls` is used to list the notes existing in NOTES_DIR.
+    It used the common utility `printTree` to print the list.
+
+    \b
+    Outer project structure:
+    .                   # project root corresponds to project_dir
+    +-- notes           # notes folder corresponds to notes_dir
+    |   +-- public      # public notes
+    |   +-- private     # private notes
+    '''
+    printTree(NOTES_DIR)
+
+
+@NotesCommandLineInterface.command(
+    short_help='Create new note'
+)
+@click.argument('filename')
+@click.option(
+    '--file-type',
+    default='private',
+    help='Either public or private',
+)
+def new(**kwargs):
+    '''Creates a new note if it doesn't exist
+
+    new command creates public or private note based on the `--file-type`
+    option and expects FILENAME to be provided as the argument.
+
+    New note name is decided based on the FILENAME variable irrespective of
+    it being public or private
+    '''
+    new_note_type = kwargs['file_type']
+    new_note_dir = NOTES_DIR / '{}'.format(new_note_type)
+    new_note_name = NOTES_DIR / \
+        '{}'.format(new_note_type) / '{}.md'.format(kwargs['filename'])
+
+    if new_note_name.exists():
+        print('A {} note already exists as {}'. format(
+            new_note_type, new_note_name))
+    else:
+        new_note_name.touch()
+        print('Created a new {} as {}'.format(new_note_type, new_note_name))
+
+    printTree(NOTES_DIR)
+
+
+@NotesCommandLineInterface.command()
+def sync():
+    pass
 
 
 def SyncNotes():
@@ -87,16 +150,4 @@ def SyncNotes():
 
 
 if __name__ == '__main__':
-
-    # TODO: DRY
-    # Project structure
-    # .                       # project root corresponds to project_dir
-    # +-- notes               # notes folder corresponds to notes_dir
-    # |   +-- public          # public notes
-    # |   +-- private         # private notes
-    project_dir = Path.cwd()
-    notes_dir = project_dir / 'notes'
-
-    # TODO: move ListNotes to a section as per the CLI logic
-    # Default operation as of now is to list notes directory
-    ListNotes(notes_dir)
+    NotesCommandLineInterface()
