@@ -53,8 +53,33 @@ def print_tree(directory):
     print()
 
 
-# Utility function
+
+def config_check():
+    pass
+
+
 def config_passphrase():
+    pass
+
+
+def note_encrypt(note):
+    pass
+
+
+def note_decrypt(note):
+    pass
+
+
+def push_to_git():
+    pass
+
+
+def pull_from_git():
+    pass
+
+
+# Utility function
+def config_passphrasess():
 
     if CONFIG_FILE.exists():
         print('Config file exist as {}'.format(CONFIG_FILE))
