@@ -18,6 +18,7 @@ Work in progress by @hrmnjt
 '''
 
 import click
+from datetime import datetime
 from pathlib import Path
 
 
@@ -69,8 +70,6 @@ def config_passphrase():
         if f.mode == 'w':
             f.write(passphrase)
         f.close()
-
-    return(passphrase)
 
 
 @click.group(
@@ -125,15 +124,24 @@ def new(**kwargs):
     New note name is decided based on the FILENAME variable irrespective of
     it being public or private
     '''
-    new_note_type = kwargs['file_type']
-    new_note_dir = NOTES_DIR / '{}'.format(new_note_type)
-    new_note_name = NOTES_DIR / \
-        '{}'.format(new_note_type) / '{}.md'.format(kwargs['filename'])
 
-    if new_note_name.exists():
-        print('A {} note already exists as {}'. format(
-            new_note_type, new_note_name))
+    date_today = datetime.today().strftime('%Y%m%d')
+    new_note_type = kwargs['file_type']
+    new_note_dir = NOTES_DIR / \
+        '{}'.format(new_note_type) / \
+        '{}'.format(kwargs['filename'])
+    new_note_name = new_note_dir / \
+        '{}.md'.format(date_today)
+
+    if new_note_dir.exists():
+        if new_note_name.exists():
+            print('A {} note already exists as {}'. format(
+                new_note_type, new_note_name))
+        else:
+            new_note_name.touch()
+            print('Created a new {} as {}'.format(new_note_type, new_note_name))
     else:
+        new_note_dir.mkdir(parents=True, exist_ok=True)
         new_note_name.touch()
         print('Created a new {} as {}'.format(new_note_type, new_note_name))
 
