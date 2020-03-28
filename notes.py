@@ -31,10 +31,10 @@ NOTES_DIR = PROJECT_DIR / 'notes'
 CONFIG_FILE = PROJECT_DIR / 'config'
 
 
-def printTree(directory):
+def print_tree(directory):
     '''Prints the directory contents
 
-    printTree is a utility function which prints the directory structure on
+    print_tree is a utility function which prints the directory structure on
     command line similar to UNIX tree binary but with very basic functionality
     Link to (actual) tree - https://linux.die.net/man/1/tree
 
@@ -53,7 +53,7 @@ def printTree(directory):
 
 
 # Utility function
-def configurationPassphrase():
+def config_passphrase():
 
     if CONFIG_FILE.exists():
         print('Config file exist as {}'.format(CONFIG_FILE))
@@ -83,19 +83,19 @@ def configurationPassphrase():
     Work in progress by @hrmnjt
     '''
 )
-@click.version_option(version='0.1.0')
-def NotesCommandLineInterface():
+@click.version_option(version='0.1.0; right now in making')
+def notes_cli():
     pass
 
 
-@NotesCommandLineInterface.command(
+@notes_cli.command(
     short_help='List all public and private notes'
 )
 def ls():
     '''List all public and private notes
 
     Command line option `ls` is used to list the notes existing in NOTES_DIR.
-    It used the common utility `printTree` to print the list.
+    It used the common utility `print_tree` to print the list.
 
     \b
     Outer project structure:
@@ -104,10 +104,10 @@ def ls():
     |   +-- public      # public notes
     |   +-- private     # private notes
     '''
-    printTree(NOTES_DIR)
+    print_tree(NOTES_DIR)
 
 
-@NotesCommandLineInterface.command(
+@notes_cli.command(
     short_help='Create new note'
 )
 @click.argument('filename')
@@ -137,17 +137,13 @@ def new(**kwargs):
         new_note_name.touch()
         print('Created a new {} as {}'.format(new_note_type, new_note_name))
 
-    printTree(NOTES_DIR)
+    print_tree(NOTES_DIR)
 
 
-@NotesCommandLineInterface.command()
+@notes_cli.command()
 def sync():
     pass
 
 
-def SyncNotes():
-    pass
-
-
 if __name__ == '__main__':
-    NotesCommandLineInterface()
+    notes_cli()
