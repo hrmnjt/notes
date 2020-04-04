@@ -26,6 +26,7 @@ from pathlib import Path
 # External imports
 import click
 import toml
+from cryptography.fernet import Fernet
 from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
@@ -38,7 +39,7 @@ CONTEXT_SETTINGS = dict(
 PROJECT_DIR = Path.cwd()
 NOTES_DIR = PROJECT_DIR / 'notes'
 PRIVATE_NOTES_DIR = PROJECT_DIR / 'notes' / 'private'
-PASSPHRASE = PROJECT_DIR / 'passphrase'
+SECRETS = PROJECT_DIR / 'secrets.toml'
 
 
 def print_tree(directory):
@@ -62,10 +63,20 @@ def print_tree(directory):
     print()
 
 
-def generate_key(passphrase):
+def secrets_init():
+    passphrase = getpass(prompt='Please enter a passphrase: ')
+    salt = Fernet.generate_key().decode()
+    print('salt {}'.format(salt))
+    secrets = {
+        'passphrase': passphrase,
+        'salt': salt
+    }
+    SECRETS.write_text(toml.dumps(secrets))
 
+
+def generate_key(passphrase, salt):
     password = passphrase.encode()
-    salt = b'\x93-\x04%\x06\xfa\xb7\x12\xc4\xdc&\xb0\xc6\xca,a'
+    salt = salt.encode()
     kdf = PBKDF2HMAC(
         algorithm=hashes.SHA256(),
         length=32,
@@ -172,21 +183,14 @@ def new(**kwargs):
 @notes_cli.command()
 def sync():
 
-    if PASSPHRASE.exists():
-        print('Config file exist as {}'.format(PASSPHRASE))
-        f = open(PASSPHRASE, 'r')
-        if f.mode == 'r':
-            passphrase = f.read()
-        f.close()
+    if SECRETS.exists():
+        secrets = toml.load(SECRETS)
     else:
-        print('Creating config file as {}'.format(PASSPHRASE))
-        passphrase = getpass(prompt='Please enter a passphrase:')
-        f = open(PASSPHRASE, 'w')
-        if f.mode == 'w':
-            f.write(passphrase)
-        f.close()
+        print('No config file exists; running init flow')
+        secrets_init()
 
-    key = generate_key(passphrase)
+    secrets = toml.load(SECRETS)
+    key = generate_key(secrets.get('passphrase'), secrets.get('salt'))
     note_encrypt(key)
 
 

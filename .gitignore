@@ -2,7 +2,7 @@
 
 # Python
 pyenv
-passphrase
+secrets.toml
 
 
 # VSCode
