@@ -17,10 +17,18 @@ Options:
 Work in progress by @hrmnjt
 '''
 
-import click
+# Internal imports
+import base64
 from datetime import datetime
+from getpass import getpass
+from os import urandom
 from pathlib import Path
-
+# External imports
+import click
+import toml
+from cryptography.hazmat.backends import default_backend
+from cryptography.hazmat.primitives import hashes
+from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
 
 # Click context settings
 CONTEXT_SETTINGS = dict(
@@ -29,7 +37,8 @@ CONTEXT_SETTINGS = dict(
 # Directory setup for project
 PROJECT_DIR = Path.cwd()
 NOTES_DIR = PROJECT_DIR / 'notes'
-CONFIG_FILE = PROJECT_DIR / 'config'
+PRIVATE_NOTES_DIR = PROJECT_DIR / 'notes' / 'private'
+PASSPHRASE = PROJECT_DIR / 'passphrase'
 
 
 def print_tree(directory):
@@ -53,17 +62,23 @@ def print_tree(directory):
     print()
 
 
+def generate_key(passphrase):
 
-def config_check():
-    pass
+    password = passphrase.encode()
+    salt = b'\x93-\x04%\x06\xfa\xb7\x12\xc4\xdc&\xb0\xc6\xca,a'
+    kdf = PBKDF2HMAC(
+        algorithm=hashes.SHA256(),
+        length=32,
+        salt=salt,
+        iterations=100000,
+        backend=default_backend()
+    )
+    key = base64.urlsafe_b64encode(kdf.derive(password))
+    return(key)
 
-
-def config_passphrase():
-    pass
-
-
-def note_encrypt(note):
-    pass
+# def note_encrypt(note, password):
+def note_encrypt(key):
+    print(key)
 
 
 def note_decrypt(note):
@@ -76,25 +91,6 @@ def push_to_git():
 
 def pull_from_git():
     pass
-
-
-# Utility function
-def config_passphrasess():
-
-    if CONFIG_FILE.exists():
-        print('Config file exist as {}'.format(CONFIG_FILE))
-        f = open(CONFIG_FILE, 'r')
-        if f.mode == 'r':
-            passphrase = f.read()
-            print(passphrase)
-        f.close()
-    else:
-        print('Creating config file as {}'.format(CONFIG_FILE))
-        passphrase = input('Please enter a passphrase:\n')
-        f = open(CONFIG_FILE, 'w')
-        if f.mode == 'w':
-            f.write(passphrase)
-        f.close()
 
 
 @click.group(
@@ -175,7 +171,23 @@ def new(**kwargs):
 
 @notes_cli.command()
 def sync():
-    pass
+
+    if PASSPHRASE.exists():
+        print('Config file exist as {}'.format(PASSPHRASE))
+        f = open(PASSPHRASE, 'r')
+        if f.mode == 'r':
+            passphrase = f.read()
+        f.close()
+    else:
+        print('Creating config file as {}'.format(PASSPHRASE))
+        passphrase = getpass(prompt='Please enter a passphrase:')
+        f = open(PASSPHRASE, 'w')
+        if f.mode == 'w':
+            f.write(passphrase)
+        f.close()
+
+    key = generate_key(passphrase)
+    note_encrypt(key)
 
 
 if __name__ == '__main__':

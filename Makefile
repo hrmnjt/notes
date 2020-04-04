@@ -7,7 +7,7 @@ SHELL = /bin/bash
 clean:
 	rm -rf ./notes/public/*
 	rm -rf ./notes/private/*
-	rm -rf ./config
+	rm -rf ./passphrase
 
 .PHONY: cleanpy
 cleanpy:
