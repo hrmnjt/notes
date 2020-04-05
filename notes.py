@@ -87,21 +87,39 @@ def generate_key(passphrase, salt):
     key = base64.urlsafe_b64encode(kdf.derive(password))
     return(key)
 
-# def note_encrypt(note, password):
+
 def note_encrypt(key):
-    print(key)
+    f = Fernet(key)
+    pathlist = PRIVATE_NOTES_DIR.glob('**/*.md')
+    for path in pathlist:
+        path_in_str = str(path)
+
+        with open(path_in_str, "rb") as file:
+            file_data = file.read()
+        encrypted_data = f.encrypt(file_data)
+        with open(path_in_str, "wb") as file:
+            file.write(encrypted_data)
+
+        print('Encrypted {}'. format(path_in_str))
 
 
-def note_decrypt(note):
-    pass
+def note_decrypt(key):
+    f = Fernet(key)
+    pathlist = PRIVATE_NOTES_DIR.glob('**/*.md')
+    for path in pathlist:
+        path_in_str = str(path)
+
+        with open(path_in_str, "rb") as file:
+            encrypted_data = file.read()
+        decrypted_data = f.decrypt(encrypted_data)
+        with open(path_in_str, "wb") as file:
+            file.write(decrypted_data)
+
+        print('Decrypted {}'. format(path_in_str))
 
 
-def push_to_git():
-    pass
-
-
-def pull_from_git():
-    pass
+def save_on_git_remote():
+    print('Pushing encrypted notes to Git remote')
 
 
 @click.group(
@@ -114,7 +132,7 @@ def pull_from_git():
     Work in progress by @hrmnjt
     '''
 )
-@click.version_option(version='0.1.0; right now in making')
+@click.version_option(version='0.2.0; right now in making')
 def notes_cli():
     pass
 
@@ -191,7 +209,10 @@ def sync():
 
     secrets = toml.load(SECRETS)
     key = generate_key(secrets.get('passphrase'), secrets.get('salt'))
+
     note_encrypt(key)
+    save_on_git_remote()
+    note_decrypt(key)
 
 
 if __name__ == '__main__':
