@@ -2,6 +2,10 @@
 
 # Python
 pyenv
+*.egg-info
+__pycache__
+
+# Project secrets
 secrets.toml
 
 
