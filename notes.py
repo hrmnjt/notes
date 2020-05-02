@@ -1,14 +1,14 @@
 '''Notes - Note down privately!
 
-Notes is a command line utility created to publically save private notes which
+Notes is a command line utility created to publicly save private notes which
 are created as scratch files during developement on a particular project.
 
 Usage:
-    notes.py ls
-    notes.py new [--file-type TEXT] filename
-    notes.py sync
-    notes.py -h | --help
-    notes.py --version
+    notes ls
+    notes new [--file-type TEXT] filename
+    notes sync
+    notes -h | --help
+    notes --version
 
 Options:
     -h --help       Show this screen
@@ -167,7 +167,10 @@ def save_on_git_remote():
     which are created as scratch files during developement on an idea/thought.
     '''
 )
-@click.version_option(version='0.2.0; right now in making')
+@click.version_option(
+    version='1.0.0; made with <3 by @hrmnjt',
+    prog_name='Notes'
+)
 def notes_cli():
     pass
 

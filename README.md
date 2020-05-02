@@ -35,20 +35,8 @@ source /path/to/new/virtual/environment/bin/activate
 pip install --editable .
 
 # Interact with notes CLI
-notes
-# Notes is a command line utility created to publicly save private notes which
-# are created as scratch files during development on a particular project.
-
-# Usage:
-#     notes ls
-#     notes new [--file-type TEXT] filename
-#     notes sync
-#     notes -h | --help
-#     notes --version
-
-# Options:
-#     -h --help       Show this screen
-#     --version       Show version
+notes --version
+# Notes, version 1.0.0; made with <3 by @hrmnjt
 ```
 
 ## Usage
