@@ -30,6 +30,8 @@ from cryptography.fernet import Fernet
 from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
+from sh.contrib import git
+from sh import ErrorReturnCode_1
 
 # Click context settings
 CONTEXT_SETTINGS = dict(
@@ -38,6 +40,7 @@ CONTEXT_SETTINGS = dict(
 # Directory setup for project
 PROJECT_DIR = Path.cwd()
 NOTES_DIR = PROJECT_DIR / 'notes'
+PUBLIC_NOTES_DIR = PROJECT_DIR / 'notes' / 'public'
 PRIVATE_NOTES_DIR = PROJECT_DIR / 'notes' / 'private'
 SECRETS = PROJECT_DIR / 'secrets.toml'
 
@@ -66,7 +69,6 @@ def print_tree(directory):
 def secrets_init():
     passphrase = getpass(prompt='Please enter a passphrase: ')
     salt = Fernet.generate_key().decode()
-    print('salt {}'.format(salt))
     secrets = {
         'passphrase': passphrase,
         'salt': salt
@@ -120,6 +122,15 @@ def note_decrypt(key):
 
 def save_on_git_remote():
     print('Pushing encrypted notes to Git remote')
+    git.add(PUBLIC_NOTES_DIR)
+    git.add(PRIVATE_NOTES_DIR)
+    try:
+        git.commit(m="Saved notes at {}".format(datetime.utcnow()))
+    except ErrorReturnCode_1:
+        print("No changes added to commit")
+    finally:
+        git.push("origin", "master")
+
 
 
 @click.group(
@@ -198,7 +209,9 @@ def new(**kwargs):
     print_tree(NOTES_DIR)
 
 
-@notes_cli.command()
+@notes_cli.command(
+    short_help='Sync your notes with git remote'
+)
 def sync():
 
     if SECRETS.exists():
