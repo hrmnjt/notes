@@ -1,6 +1,7 @@
-# Notes
+# Notes - Note down privately!
 
-Note down privately!
+![notes](./.github/notes-cover-image.jpg)  
+_[Photo from Unsplash by Jan Kahánek](https://unsplash.com/photos/g3O5ZtRk2E4)_
 
 ## Installation
 
@@ -113,9 +114,6 @@ scc notes.py setup.py secrets.toml .editorconfig .gitignore requirements.txt REA
 ```
 _Output using [scc](https://github.com/boyter/scc)_
 
-I would like to thank creator and contributors of `python3`, `pathlib`, `toml`, 
-`cryptography`, `sh` and `click`
-
 ## TODO
 
 - [ ] Make notes faster
@@ -145,3 +143,9 @@ git branch -v
 
 If you intend to not use `setuptools` integration, please use CLI using 
 `python notes.py` instead of `notes`.
+
+
+## Thanks 
+
+I would like to thank creator and contributors of `python3`, `pathlib`, `toml`, 
+`cryptography`, `sh`, `click` and Jan Kahánek (for the image)
