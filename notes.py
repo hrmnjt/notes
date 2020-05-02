@@ -13,8 +13,6 @@ Usage:
 Options:
     -h --help       Show this screen
     --version       Show version
-
-Work in progress by @hrmnjt
 '''
 
 # Internal imports
@@ -67,6 +65,14 @@ def print_tree(directory):
 
 
 def secrets_init():
+    '''Initializes the secrets in local toml configuration
+
+    secrets_init creates a new secret configuration for storing passphrase and
+    salt used for encryption and pushing to remote git repository. Salt is
+    generated using the generate_key function
+
+    Same passphrase and salt are used for decryption of private notes as well
+    '''
     passphrase = getpass(prompt='Please enter a passphrase: ')
     salt = Fernet.generate_key().decode()
     secrets = {
@@ -77,6 +83,11 @@ def secrets_init():
 
 
 def generate_key(passphrase, salt):
+    '''Generates passphrase and salt
+
+    generate_key creates a key used for encryption and decryption using
+    PBKDF2HMAC algorithm
+    '''
     password = passphrase.encode()
     salt = salt.encode()
     kdf = PBKDF2HMAC(
@@ -91,6 +102,11 @@ def generate_key(passphrase, salt):
 
 
 def note_encrypt(key):
+    '''Enrypts private notes before sync
+
+    Iterates through the private notes directory and lists all the markdown
+    files; and encrypts the markfown file with the key provided as input
+    '''
     f = Fernet(key)
     pathlist = PRIVATE_NOTES_DIR.glob('**/*.md')
     for path in pathlist:
@@ -106,6 +122,11 @@ def note_encrypt(key):
 
 
 def note_decrypt(key):
+    '''Decrypts private notes after sync
+
+    Iterates through the private notes directory and lists all the markdown
+    files; and decrypts file with the key provided as input
+    '''
     f = Fernet(key)
     pathlist = PRIVATE_NOTES_DIR.glob('**/*.md')
     for path in pathlist:
@@ -121,14 +142,19 @@ def note_decrypt(key):
 
 
 def save_on_git_remote():
-    print('Pushing encrypted notes to Git remote')
+    '''Saves notes on remote Git repository
+
+    Uses the Git shell commands to add, commit and push the latest
+    '''
     git.add(PUBLIC_NOTES_DIR)
     git.add(PRIVATE_NOTES_DIR)
     try:
-        git.commit(m="Saved notes at {}".format(datetime.utcnow()))
+        print("Commiting notes")
+        git.commit(m="Saved notes at {}".format(datetime.now()))
     except ErrorReturnCode_1:
         print("No changes added to commit")
     finally:
+        print("Syncing notes to Git remote")
         git.push("origin", "master")
 
 
@@ -139,8 +165,6 @@ def save_on_git_remote():
 
     Notes is a command line utility created to publically save private notes
     which are created as scratch files during developement on an idea/thought.
-
-    Work in progress by @hrmnjt
     '''
 )
 @click.version_option(version='0.2.0; right now in making')
@@ -213,7 +237,12 @@ def new(**kwargs):
     short_help='Sync your notes with git remote'
 )
 def sync():
+    '''Synchronises the notes to Git remote
 
+    sync command saves notes to Git remote. Private notes are encrypted before
+    saving to remote. Keys are saved on local and used for encryption and
+    decryption before sync
+    '''
     if SECRETS.exists():
         secrets = toml.load(SECRETS)
     else:
