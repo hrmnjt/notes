@@ -112,10 +112,10 @@ def note_encrypt(key):
     for path in pathlist:
         path_in_str = str(path)
 
-        with open(path_in_str, "rb") as file:
+        with open(path_in_str, 'rb') as file:
             file_data = file.read()
         encrypted_data = f.encrypt(file_data)
-        with open(path_in_str, "wb") as file:
+        with open(path_in_str, 'wb') as file:
             file.write(encrypted_data)
 
         print('Encrypted {}'. format(path_in_str))
@@ -132,10 +132,10 @@ def note_decrypt(key):
     for path in pathlist:
         path_in_str = str(path)
 
-        with open(path_in_str, "rb") as file:
+        with open(path_in_str, 'rb') as file:
             encrypted_data = file.read()
         decrypted_data = f.decrypt(encrypted_data)
-        with open(path_in_str, "wb") as file:
+        with open(path_in_str, 'wb') as file:
             file.write(decrypted_data)
 
         print('Decrypted {}'. format(path_in_str))
@@ -149,13 +149,13 @@ def save_on_git_remote():
     git.add(PUBLIC_NOTES_DIR)
     git.add(PRIVATE_NOTES_DIR)
     try:
-        print("Commiting notes")
-        git.commit(m="Saved notes at {}".format(datetime.now()))
+        print('Commiting notes')
+        git.commit(m='Saved notes at {}'.format(datetime.now()))
     except ErrorReturnCode_1:
-        print("No changes added to commit")
+        print('No changes added to commit')
     finally:
-        print("Syncing notes to Git remote")
-        git.push("origin", "master")
+        print('Syncing notes to Git remote')
+        git.push('origin', 'master')
 
 
 
