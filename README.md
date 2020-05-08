@@ -1,8 +1,5 @@
 # Notes - Note down privately!
 
-![notes](./.github/notes-cover-image.jpg)  
-_[Photo from Unsplash by Jan Kahánek](https://unsplash.com/photos/g3O5ZtRk2E4)_
-
 ## Installation
 
 Easiest approach (at this time) is to follow a 3 step approach:

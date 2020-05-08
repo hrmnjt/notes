@@ -1,14 +1,13 @@
-'''Notes - Note down privately!
+'''TIL - today I learned ...
 
-Notes is a command line utility created to publicly save private notes which
-are created as scratch files during developement on a particular project.
+Collection of things that I learnt today.
 
 Usage:
-    notes ls
-    notes new [--file-type TEXT] filename
-    notes sync
-    notes -h | --help
-    notes --version
+    til ls
+    til new [--file-type TEXT] filename
+    til sync
+    til -h | --help
+    til --version
 
 Options:
     -h --help       Show this screen
@@ -37,9 +36,9 @@ CONTEXT_SETTINGS = dict(
 )
 # Directory setup for project
 PROJECT_DIR = Path.cwd()
-NOTES_DIR = PROJECT_DIR / 'notes'
-PUBLIC_NOTES_DIR = PROJECT_DIR / 'notes' / 'public'
-PRIVATE_NOTES_DIR = PROJECT_DIR / 'notes' / 'private'
+TOPICS_DIR = PROJECT_DIR / 'topics'
+PUBLIC_TOPICS_DIR = TOPICS_DIR / 'public'
+PRIVATE_TOPICS_DIR = TOPICS_DIR / 'private'
 SECRETS = PROJECT_DIR / 'secrets.toml'
 
 
@@ -108,7 +107,7 @@ def note_encrypt(key):
     files; and encrypts the markfown file with the key provided as input
     '''
     f = Fernet(key)
-    pathlist = PRIVATE_NOTES_DIR.glob('**/*.md')
+    pathlist = PRIVATE_TOPICS_DIR.glob('**/*.md')
     for path in pathlist:
         path_in_str = str(path)
 
@@ -128,7 +127,7 @@ def note_decrypt(key):
     files; and decrypts file with the key provided as input
     '''
     f = Fernet(key)
-    pathlist = PRIVATE_NOTES_DIR.glob('**/*.md')
+    pathlist = PRIVATE_TOPICS_DIR.glob('**/*.md')
     for path in pathlist:
         path_in_str = str(path)
 
@@ -146,8 +145,8 @@ def save_on_git_remote():
 
     Uses the Git shell commands to add, commit and push the latest
     '''
-    git.add(PUBLIC_NOTES_DIR)
-    git.add(PRIVATE_NOTES_DIR)
+    git.add(PUBLIC_TOPICS_DIR)
+    git.add(PRIVATE_TOPICS_DIR)
     try:
         print('Commiting notes')
         git.commit(m='Saved notes at {}'.format(datetime.now()))
@@ -161,21 +160,20 @@ def save_on_git_remote():
 
 @click.group(
     context_settings=CONTEXT_SETTINGS,
-    help='''Notes - Note down privately!
+    help='''TIL - today I learned ...
 
-    Notes is a command line utility created to publically save private notes
-    which are created as scratch files during developement on an idea/thought.
+    Collection of things that I learnt today.
     '''
 )
 @click.version_option(
     version='1.0.0; made with <3 by @hrmnjt',
-    prog_name='Notes'
+    prog_name='TIL CLI'
 )
-def notes_cli():
+def til_cli():
     pass
 
 
-@notes_cli.command(
+@til_cli.command(
     short_help='List all public and private notes'
 )
 def ls():
@@ -191,16 +189,16 @@ def ls():
     |   +-- public      # public notes
     |   +-- private     # private notes
     '''
-    print_tree(NOTES_DIR)
+    print_tree(TOPICS_DIR)
 
 
-@notes_cli.command(
+@til_cli.command(
     short_help='Create new note'
 )
 @click.argument('filename')
 @click.option(
     '--file-type',
-    default='private',
+    default='public',
     help='Either public or private',
 )
 def new(**kwargs):
@@ -215,7 +213,7 @@ def new(**kwargs):
 
     date_today = datetime.today().strftime('%Y%m%d')
     new_note_type = kwargs['file_type']
-    new_note_dir = NOTES_DIR / \
+    new_note_dir = TOPICS_DIR / \
         '{}'.format(new_note_type) / \
         '{}'.format(kwargs['filename'])
     new_note_name = new_note_dir / \
@@ -233,10 +231,10 @@ def new(**kwargs):
         new_note_name.touch()
         print('Created a new {} as {}'.format(new_note_type, new_note_name))
 
-    print_tree(NOTES_DIR)
+    print_tree(TOPICS_DIR)
 
 
-@notes_cli.command(
+@til_cli.command(
     short_help='Sync your notes with git remote'
 )
 def sync():
@@ -261,4 +259,4 @@ def sync():
 
 
 if __name__ == '__main__':
-    notes_cli()
+    til_cli()
