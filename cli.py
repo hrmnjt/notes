@@ -42,7 +42,7 @@ PRIVATE_TOPICS_DIR = TOPICS_DIR / 'private'
 SECRETS = PROJECT_DIR / 'secrets.toml'
 
 
-def print_tree(directory):
+def util_print_tree(directory):
     '''Prints the directory contents
 
     print_tree is a utility function which prints the directory structure on
@@ -63,14 +63,14 @@ def print_tree(directory):
     print()
 
 
-def secrets_init():
+def util_secrets_init():
     '''Initializes the secrets in local toml configuration
 
     secrets_init creates a new secret configuration for storing passphrase and
     salt used for encryption and pushing to remote git repository. Salt is
     generated using the generate_key function
 
-    Same passphrase and salt are used for decryption of private notes as well
+    Same passphrase and salt are used for decryption of private TIL topics
     '''
     passphrase = getpass(prompt='Please enter a passphrase: ')
     salt = Fernet.generate_key().decode()
@@ -81,7 +81,7 @@ def secrets_init():
     SECRETS.write_text(toml.dumps(secrets))
 
 
-def generate_key(passphrase, salt):
+def util_generate_key(passphrase, salt):
     '''Generates passphrase and salt
 
     generate_key creates a key used for encryption and decryption using
@@ -100,11 +100,11 @@ def generate_key(passphrase, salt):
     return(key)
 
 
-def note_encrypt(key):
-    '''Enrypts private notes before sync
+def util_encrypt(key):
+    '''Enrypts private TIL topics before sync
 
-    Iterates through the private notes directory and lists all the markdown
-    files; and encrypts the markfown file with the key provided as input
+    Iterates through the private topics directory and lists all the markdown
+    files; and encrypts only private topics with the key provided as input
     '''
     f = Fernet(key)
     pathlist = PRIVATE_TOPICS_DIR.glob('**/*.md')
@@ -120,8 +120,8 @@ def note_encrypt(key):
         print('Encrypted {}'. format(path_in_str))
 
 
-def note_decrypt(key):
-    '''Decrypts private notes after sync
+def util_decrypt(key):
+    '''Decrypts private TIL topics after sync
 
     Iterates through the private notes directory and lists all the markdown
     files; and decrypts file with the key provided as input
@@ -140,8 +140,8 @@ def note_decrypt(key):
         print('Decrypted {}'. format(path_in_str))
 
 
-def save_on_git_remote():
-    '''Saves notes on remote Git repository
+def util_save_on_git_remote():
+    '''Saves all topics on remote Git repository
 
     Uses the Git shell commands to add, commit and push the latest
     '''
@@ -161,8 +161,6 @@ def save_on_git_remote():
 @click.group(
     context_settings=CONTEXT_SETTINGS,
     help='''TIL - today I learned ...
-
-    Collection of things that I learnt today.
     '''
 )
 @click.version_option(
@@ -177,61 +175,51 @@ def til_cli():
     short_help='List all public and private notes'
 )
 def ls():
-    '''List all public and private notes
-
-    Command line option `ls` is used to list the notes existing in NOTES_DIR.
-    It used the common utility `print_tree` to print the list.
-
-    \b
-    Outer project structure:
-    .                   # project root corresponds to project_dir
-    +-- notes           # notes folder corresponds to notes_dir
-    |   +-- public      # public notes
-    |   +-- private     # private notes
+    '''List all public and private topics
     '''
-    print_tree(TOPICS_DIR)
+    util_print_tree(TOPICS_DIR)
 
 
-@til_cli.command(
-    short_help='Create new note'
-)
-@click.argument('filename')
-@click.option(
-    '--file-type',
-    default='public',
-    help='Either public or private',
-)
-def new(**kwargs):
-    '''Creates a new note if it doesn't exist
+# @til_cli.command(
+#     short_help='Create new note'
+# )
+# @click.argument('filename')
+# @click.option(
+#     '--file-type',
+#     default='public',
+#     help='Either public or private',
+# )
+# def new(**kwargs):
+#     '''Creates a new note if it doesn't exist
 
-    new command creates public or private note based on the `--file-type`
-    option and expects FILENAME to be provided as the argument.
+#     new command creates public or private note based on the `--file-type`
+#     option and expects FILENAME to be provided as the argument.
 
-    New note name is decided based on the FILENAME variable irrespective of
-    it being public or private
-    '''
+#     New note name is decided based on the FILENAME variable irrespective of
+#     it being public or private
+#     '''
 
-    date_today = datetime.today().strftime('%Y%m%d')
-    new_note_type = kwargs['file_type']
-    new_note_dir = TOPICS_DIR / \
-        '{}'.format(new_note_type) / \
-        '{}'.format(kwargs['filename'])
-    new_note_name = new_note_dir / \
-        '{}.md'.format(date_today)
+#     date_today = datetime.today().strftime('%Y%m%d')
+#     new_note_type = kwargs['file_type']
+#     new_note_dir = TOPICS_DIR / \
+#         '{}'.format(new_note_type) / \
+#         '{}'.format(kwargs['filename'])
+#     new_note_name = new_note_dir / \
+#         '{}.md'.format(date_today)
 
-    if new_note_dir.exists():
-        if new_note_name.exists():
-            print('A {} note already exists as {}'. format(
-                new_note_type, new_note_name))
-        else:
-            new_note_name.touch()
-            print('Created a new {} as {}'.format(new_note_type, new_note_name))
-    else:
-        new_note_dir.mkdir(parents=True, exist_ok=True)
-        new_note_name.touch()
-        print('Created a new {} as {}'.format(new_note_type, new_note_name))
+#     if new_note_dir.exists():
+#         if new_note_name.exists():
+#             print('A {} note already exists as {}'. format(
+#                 new_note_type, new_note_name))
+#         else:
+#             new_note_name.touch()
+#             print('Created a new {} as {}'.format(new_note_type, new_note_name))
+#     else:
+#         new_note_dir.mkdir(parents=True, exist_ok=True)
+#         new_note_name.touch()
+#         print('Created a new {} as {}'.format(new_note_type, new_note_name))
 
-    print_tree(TOPICS_DIR)
+#     util_print_tree(TOPICS_DIR)
 
 
 @til_cli.command(
@@ -248,14 +236,14 @@ def sync():
         secrets = toml.load(SECRETS)
     else:
         print('No config file exists; running init flow')
-        secrets_init()
+        util_secrets_init()
 
     secrets = toml.load(SECRETS)
-    key = generate_key(secrets.get('passphrase'), secrets.get('salt'))
+    key = util_generate_key(secrets.get('passphrase'), secrets.get('salt'))
 
-    note_encrypt(key)
-    save_on_git_remote()
-    note_decrypt(key)
+    util_encrypt(key)
+    util_save_on_git_remote()
+    util_decrypt(key)
 
 
 if __name__ == '__main__':
