@@ -20,9 +20,11 @@ from datetime import datetime
 from getpass import getpass
 from os import urandom
 from pathlib import Path
+import textwrap
 # External imports
 import click
 import toml
+import markdown2
 from cryptography.fernet import Fernet
 from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives import hashes
@@ -34,11 +36,8 @@ from sh import ErrorReturnCode_1
 CONTEXT_SETTINGS = dict(
     help_option_names=['-h', '--help']
 )
-# Directory setup for project
+# File path setup for project
 PROJECT_DIR = Path.cwd()
-TOPICS_DIR = PROJECT_DIR / 'topics'
-PUBLIC_TOPICS_DIR = TOPICS_DIR / 'public'
-PRIVATE_TOPICS_DIR = TOPICS_DIR / 'private'
 SECRETS = PROJECT_DIR / 'secrets.toml'
 
 
@@ -172,56 +171,89 @@ def til_cli():
 
 
 @til_cli.command(short_help='List TIL topics')
-def ls():
+def ls(**kwargs):
     '''List all public and private TIL topics
     '''
     util_print_tree(TOPICS_DIR)
 
 
-# @til_cli.command(
-#     short_help='Create new note'
-# )
-# @click.argument('filename')
-# @click.option(
-#     '--file-type',
-#     default='public',
-#     help='Either public or private',
-# )
-# def new(**kwargs):
-#     '''Creates a new note if it doesn't exist
+@til_cli.command(
+    short_help='Create new note'
+)
+@click.argument('filename')
+@click.option(
+    '--topic',
+    default='misc',
+    help='TIL category topic',
+)
+@click.option(
+    '--type',
+    default='public',
+    help='Either public or private learning topic',
+)
+def new(**kwargs):
+    '''Create a new TIL note
+    '''
+    topic = kwargs['topic']
+    til_file_type = kwargs['type']
+    til_file_name = kwargs['filename']
+    print('Topic: {}'.format(topic))
+    print('Type: {}'.format(topic))
+    print('Filename: {}'.format(til_file_name))
 
-#     new command creates public or private note based on the `--file-type`
-#     option and expects FILENAME to be provided as the argument.
+    topic_dir = PROJECT_DIR / '{}'.format(topic)
+    new_til = topic_dir / '{}.md'.format(til_file_name)
 
-#     New note name is decided based on the FILENAME variable irrespective of
-#     it being public or private
-#     '''
+    if topic_dir.exists():
+        if new_til.exists():
+            print('A {} TIL already exists in {} topic'.format(
+                til_file_name, topic
+            ))
+        else:
+            new_til.touch()
+            til_metadata = '''\
+            ---
+            topic: {}
+            type: {}
+            date: {}
+            ---
 
-#     date_today = datetime.today().strftime('%Y%m%d')
-#     new_note_type = kwargs['file_type']
-#     new_note_dir = TOPICS_DIR / \
-#         '{}'.format(new_note_type) / \
-#         '{}'.format(kwargs['filename'])
-#     new_note_name = new_note_dir / \
-#         '{}.md'.format(date_today)
+            '''.format(topic, til_file_type, datetime.today().strftime('%Y%m%d'))
 
-#     if new_note_dir.exists():
-#         if new_note_name.exists():
-#             print('A {} note already exists as {}'. format(
-#                 new_note_type, new_note_name))
-#         else:
-#             new_note_name.touch()
-#             print('Created a new {} as {}'.format(new_note_type, new_note_name))
-#     else:
-#         new_note_dir.mkdir(parents=True, exist_ok=True)
-#         new_note_name.touch()
-#         print('Created a new {} as {}'.format(new_note_type, new_note_name))
+            til_file = open(new_til, 'w+')
+            til_file.write(textwrap.dedent(til_metadata))
+            til_file.close()
 
-#     util_print_tree(TOPICS_DIR)
+            print('A {} TIL was created in {} topic'.format(
+                til_file_name, topic
+            ))
+    else:
+        topic_dir.mkdir(parents=True, exist_ok=True)
+        new_til.touch()
+        til_metadata = '''
+        topic: {}
+        type: {}
+        date: {}
+
+        '''.format(topic, til_file_type, datetime.today().strftime('%Y%m%d'))
+
+        til_file = open(new_til, 'w+')
+        til_file.write(til_metadata)
+        til_file.close()
+
+        print('A {} TIL was created in {} topic'.format(
+            til_file_name, topic
+        ))
+
+    with open(new_til, 'r') as f:
+        text = f.read()
+
+    md = markdown2.markdown(text, extras=["metadata"])
+    print(md.metadata)
 
 
 @til_cli.command(short_help='Sync and save your TIL topics')
-def sync():
+def sync(**kwargs):
     '''Synchronises and saves the TIL topics to remote Git repository
     '''
     if SECRETS.exists():
