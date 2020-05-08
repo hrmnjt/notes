@@ -171,11 +171,9 @@ def til_cli():
     pass
 
 
-@til_cli.command(
-    short_help='List all public and private notes'
-)
+@til_cli.command(short_help='List TIL topics')
 def ls():
-    '''List all public and private topics
+    '''List all public and private TIL topics
     '''
     util_print_tree(TOPICS_DIR)
 
@@ -222,15 +220,9 @@ def ls():
 #     util_print_tree(TOPICS_DIR)
 
 
-@til_cli.command(
-    short_help='Sync your notes with git remote'
-)
+@til_cli.command(short_help='Sync and save your TIL topics')
 def sync():
-    '''Synchronises the notes to Git remote
-
-    sync command saves notes to Git remote. Private notes are encrypted before
-    saving to remote. Keys are saved on local and used for encryption and
-    decryption before sync
+    '''Synchronises and saves the TIL topics to remote Git repository
     '''
     if SECRETS.exists():
         secrets = toml.load(SECRETS)
