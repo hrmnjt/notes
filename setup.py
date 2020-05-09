@@ -8,6 +8,8 @@ setup(
     version='1.0',
     install_requires=[
         'click',
+        'cryptography',
+        'toml',
     ],
     entry_points={'console_scripts': ['cli = cli:til_cli']}
 )

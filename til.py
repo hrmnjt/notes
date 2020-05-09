@@ -1,12 +1,19 @@
 '''TIL - today I learned ...
 '''
 
+from getpass import getpass
 from pathlib import Path
+import toml
+from cryptography.fernet import Fernet
+from cryptography.hazmat.backends import default_backend
+from cryptography.hazmat.primitives import hashes
+from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
 
 class TodayILearned():
 
     def __init__(self):
         self.PROJECT_DIR = Path.cwd()
+        self.SECRETS = self.PROJECT_DIR / 'secrets.toml'
         super().__init__()
 
 
@@ -30,5 +37,15 @@ class TodayILearned():
         return
 
 
-    def sync(self):
-        pass
+    def save(self):
+        if self.SECRETS.exists():
+            secrets = toml.load(self.SECRETS)
+        else:
+            print('No config file exists; running init flow')
+            passphrase = getpass(prompt='Please enter a passphrase: ')
+            salt = Fernet.generate_key().decode()
+            secrets = {
+                'passphrase': passphrase,
+                'salt': salt
+            }
+            self.SECRETS.write_text(toml.dumps(secrets))

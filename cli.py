@@ -15,7 +15,6 @@ CONTEXT_SETTINGS = dict(help_option_names=['-h', '--help'])
 def til_cli():
     pass
 
-
 @til_cli.command(short_help='Create new note')
 @click.argument('filename')
 @click.option('--topic', default='misc', help='TIL category topic')
@@ -31,7 +30,9 @@ def new(**kwargs):
 
 @til_cli.command(short_help='Sync and save your TIL topics')
 def sync():
-    print('Syncing shit....')
+
+    til = TodayILearned()
+    til.save()
 
 
 if __name__ == '__main__':
