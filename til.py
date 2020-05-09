@@ -1,6 +1,7 @@
 '''TIL - today I learned ...
 '''
 import base64
+import datetime
 from getpass import getpass
 from pathlib import Path
 import toml
@@ -8,6 +9,8 @@ from cryptography.fernet import Fernet
 from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
+from sh.contrib import git
+from sh import ErrorReturnCode_1
 
 class TodayILearned():
 
@@ -15,20 +18,6 @@ class TodayILearned():
         self.PROJECT_DIR = Path.cwd()
         self.SECRETS = self.PROJECT_DIR / 'secrets.toml'
         super().__init__()
-
-
-    def generate_key(self, passphrase, salt):
-        password = passphrase.encode()
-        salt = salt.encode()
-        kdf = PBKDF2HMAC(
-            algorithm=hashes.SHA256(),
-            length=32,
-            salt=salt,
-            iterations=100000,
-            backend=default_backend()
-        )
-        key = base64.urlsafe_b64encode(kdf.derive(password))
-        return(key)
 
 
     def create(self, til_topic, til_name, til_type):
@@ -64,24 +53,40 @@ class TodayILearned():
             self.SECRETS.write_text(toml.dumps(secrets))
 
         secrets = toml.load(self.SECRETS)
-        f = Fernet(self.generate_key(secrets.get('passphrase'), secrets.get('salt')))
+        kdf = PBKDF2HMAC(
+            algorithm=hashes.SHA256(),
+            length=32,
+            salt=secrets.get('salt').encode(),
+            iterations=100000,
+            backend=default_backend()
+        )
+        key = base64.urlsafe_b64encode(
+            kdf.derive(secrets.get('passphrase').encode()))
+        f = Fernet(key)
 
-        PRIVATE_TIL = self.PROJECT_DIR / 'private'
+        PRIVATE_TIL_DIR = self.PROJECT_DIR / 'private'
 
-        # for path in PRIVATE_TIL.glob('**/*.md'):
-        #     path_in_str = str(path)
+        for path in PRIVATE_TIL_DIR.glob('**/*.md'):
+            path_in_str = str(path)
 
-        #     with open(path_in_str, 'rb') as filename:
-        #         file_data = filename.read()
-        #     encrypted_data = f.encrypt(file_data)
-        #     with open(path_in_str, 'wb') as filename:
-        #         filename.write(encrypted_data)
+            with open(path_in_str, 'rb') as filename:
+                file_data = filename.read()
+            encrypted_data = f.encrypt(file_data)
+            with open(path_in_str, 'wb') as filename:
+                filename.write(encrypted_data)
 
-        #     print('Encrypted {}'. format(path_in_str))
+            print('Encrypted {}'. format(path_in_str))
 
-        print("Saving on git remote")
+        git.add('--all')
+        try:
+            git.commit(m='Saved encrypted TILs at {}'.format(datetime.now()))
+        except ErrorReturnCode_1:
+            print('No changes added to commit')
+        finally:
+            print('Syncing notes to Git remote')
+            # git.push('origin', 'master')
 
-        for path in PRIVATE_TIL.glob('**/*.md'):
+        for path in PRIVATE_TIL_DIR.glob('**/*.md'):
             path_in_str = str(path)
 
             with open(path_in_str, 'rb') as file:

@@ -10,6 +10,7 @@ setup(
         'click',
         'cryptography',
         'toml',
+        'sh'
     ],
     entry_points={'console_scripts': ['cli = cli:til_cli']}
 )
