@@ -1,3 +1,6 @@
+'''TIL CLI setup details
+'''
+
 from setuptools import setup
 
 setup(

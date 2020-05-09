@@ -1,11 +1,11 @@
-'''TIL - today I learned ...
-
-Collection of things that I learned, which could help if documented but are
-not worth a blog
-
+'''TIL command line interface (CLI)
 '''
 
+# External packages
 import click
+
+# Source code
+
 
 CONTEXT_SETTINGS = dict(help_option_names=['-h', '--help'])
 
@@ -14,11 +14,6 @@ CONTEXT_SETTINGS = dict(help_option_names=['-h', '--help'])
 @click.version_option(version='1.0.0; with <3 by @hrmnjt', prog_name='TIL CLI')
 def til_cli():
     pass
-
-
-@til_cli.command(short_help='List all public and private notes')
-def ls():
-    print('Listing shit....')
 
 
 @til_cli.command(short_help='Create new note')
@@ -30,9 +25,8 @@ def new(**kwargs):
 
 
 @til_cli.command(short_help='Sync and save your TIL topics')
-def sync(**kwargs):
+def sync():
     print('Syncing shit....')
-
 
 
 if __name__ == '__main__':
