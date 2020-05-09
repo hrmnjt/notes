@@ -5,7 +5,7 @@
 import click
 
 # Source code
-
+from til import TodayILearned
 
 CONTEXT_SETTINGS = dict(help_option_names=['-h', '--help'])
 
@@ -21,7 +21,12 @@ def til_cli():
 @click.option('--topic', default='misc', help='TIL category topic')
 @click.option('--type', default='public', help='public or private')
 def new(**kwargs):
-    print('Creating new shit....')
+    til_name = kwargs['filename']
+    til_topic = kwargs['topic']
+    til_type = kwargs['type']
+
+    til = TodayILearned()
+    til.create(til_topic, til_name, til_type)
 
 
 @til_cli.command(short_help='Sync and save your TIL topics')
