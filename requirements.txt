@@ -1,7 +1,0 @@
-cffi==1.14.0
-click==7.1.2
-cryptography==2.9.2
-pycparser==2.20
-sh==1.13.1
-six==1.14.0
-toml==0.10.0
