@@ -79,7 +79,7 @@ class TodayILearned():
 
         git.add('--all')
         try:
-            git.commit(m='Saved encrypted TILs at {}'.format(datetime.now()))
+            git.commit(m='Saved TILs at {}'.format(datetime.now()))
         except ErrorReturnCode_1:
             print('No changes added to commit')
         finally:
