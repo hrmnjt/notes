@@ -84,7 +84,7 @@ class TodayILearned():
             print('No changes added to commit')
         finally:
             print('Syncing notes to Git remote')
-            # git.push('origin', 'master')
+            git.push('origin', 'til-todo')
 
         for path in PRIVATE_TIL_DIR.glob('*.md'):
             path_in_str = str(path)
