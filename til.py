@@ -1,7 +1,7 @@
 '''TIL - today I learned ...
 '''
 import base64
-import datetime
+from datetime import datetime
 from getpass import getpass
 from pathlib import Path
 import toml
