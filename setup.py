@@ -9,6 +9,7 @@ setup(
     install_requires=[
         'click',
         'cryptography',
+        'pip==20.1',
         'toml',
         'sh'
     ],
