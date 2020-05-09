@@ -66,7 +66,7 @@ class TodayILearned():
 
         PRIVATE_TIL_DIR = self.PROJECT_DIR / 'private'
 
-        for path in PRIVATE_TIL_DIR.glob('**/*.md'):
+        for path in PRIVATE_TIL_DIR.glob('*.md'):
             path_in_str = str(path)
 
             with open(path_in_str, 'rb') as filename:
@@ -86,7 +86,7 @@ class TodayILearned():
             print('Syncing notes to Git remote')
             # git.push('origin', 'master')
 
-        for path in PRIVATE_TIL_DIR.glob('**/*.md'):
+        for path in PRIVATE_TIL_DIR.glob('*.md'):
             path_in_str = str(path)
 
             with open(path_in_str, 'rb') as file:
