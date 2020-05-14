@@ -2,13 +2,13 @@
 
 ## Categories
 
-- [Category name](#category-name)
+- [vertica](#vertica)
 
 ---
 
-## Category name
+## Vertica
 
-- [Placeholder TIL](#placeholder-link)
+- [Export data to S3](./vertica/exporting-data-to-s3.md)
 
 ---
 
