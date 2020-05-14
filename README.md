@@ -9,6 +9,7 @@
 ## Vertica
 
 - [Export data to S3](./vertica/exporting-data-to-s3.md)
+- [External table by reading S3s](./vertica/external-table-from-s3.md)
 
 ---
 
