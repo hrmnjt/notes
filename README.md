@@ -82,12 +82,21 @@ and Kubernetes (executor, operator and KEDA)
 
 ## 19000101 (start of time for `TIL`)
 
+- [curated/git-master-to-main](./curated/git-master-to-main.md) - `#git` - 
+change Git primary branch from master to main on existing repo
+
+- [curated/vertica-exporting-table-to-s3](./curated/vertica-exporting-data-to-s3.md) - 
+`#vertica` - exporting data to s3
+
+- [curated/vertica-external-table-from-s3](./curated/vertica-external-table-from-s3.md) - 
+`#vertica` - creating an external table from s3 on vertica
+
 - https://martinfowler.com/bliki/MonolithFirst.html - `#architecture`, 
 `#monolith`, `#microservices` - you shouldn't start your project with 
 microservices
 
-- https://www.nasa.gov/sites/default/files/atoms/files/nasa_systems_engineering_handbook.pdf 
-- `#architecture`, `#system-design` - NASA's system engineering handbook
+- https://www.nasa.gov/sites/default/files/atoms/files/nasa_systems_engineering_handbook.pdf - 
+`#architecture`, `#system-design` - NASA's system engineering handbook
 
 - https://news.ycombinator.com/item?id=26629994 - `#management`, `#agile` - 
 Why can't anyone tell me what story points equate to?
